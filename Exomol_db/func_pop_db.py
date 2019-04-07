@@ -21,7 +21,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 
 	g_ns_dict = {'31P16O':2, '31P32S':2, '14N32S':3, '32S1H':2, '45Sc1H':16,  '27Al16O': 6, '27Al18O': 6 , '26Al16O': 6, '14N16O': 2, '28Si1H': 2, '51V16O': 8}
 
-	print(file1)
+# 	print(file1)
 	name1 = file1.split('/')    
 	name2 = file2.split('/')
 
@@ -59,17 +59,37 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
     
 	data2_statestrans, Q2T = join_statestrans(file2, g_ns, temperature)
 
-
+	print('comparing')
+	
 	'''compare statestrans for two data files, calculate K ect for each transition'''
 	data_compare = compare(data1_statestrans, data2_statestrans, frac_delta_mu, intensity_cutoff)
 
 	name = molecule1
 	
-
+	count = 0
 	print('opening db')
 
 	'''open session to db'''
 	session = Session(autoflush=False)
+	
+	'''check if isotopologue in db, if not; add. create relationship between 
+		isotopologue and transition'''
+	try:
+		trans_iso = session.query(Isotopologue).filter(Isotopologue.name==name).filter(Isotopologue.temperature==temperature).one()
+		#print('try')
+	except sqlalchemy.orm.exc.NoResultFound:
+	#not in db, add
+		#print('add')
+		trans_iso = Isotopologue()
+		trans_iso.name = name
+		trans_iso.temperature = temperature
+		trans_iso.g_ns = g_ns_dict[name]
+		trans_iso.Q_T = Q_T
+			
+		session.add(trans_iso)
+		session.flush()		
+	except sqlalchemy.orm.exc.MultipleResultsFound:
+		raise Exception("Too many in db - FIX!")
 
 	'''loop through all transitions check if in db, if not; add'''
 	for key in data_compare:
@@ -87,29 +107,15 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 			new_trans.change_I = data_compare[key][3]
 			new_trans.K_mu = data_compare[key][4]
 			new_trans.K_I = data_compare[key][5]
+			'''link to isotopologue'''
+			new_trans.isotopologue_id = trans_iso.id
 		except sqlalchemy.orm.exc.MultipleResultsFound:
 			raise Exception("Too many in db - FIX!")
 # 		print('search for iso')
 
-		'''check if isotopologue in db, if not; add. create relationship between 
-		isotopologue and transition'''
-		try:
-			trans_iso = session.query(Isotopologue).filter(Isotopologue.name==name).filter(Isotopologue.temperature==temperature).one()
-			#print('try')
-		except sqlalchemy.orm.exc.NoResultFound:
-		#not in db, add
-			#print('add')
-			trans_iso = Isotopologue()
-			trans_iso.name = name
-			trans_iso.temperature = temperature
-			trans_iso.g_ns = g_ns_dict[name]
-			trans_iso.Q_T = Q_T
-			session.add(trans_iso)
-			session.flush()
-		except sqlalchemy.orm.exc.MultipleResultsFound:
-			raise Exception("Too many in db - FIX!")
-		new_trans.isotopologue_id = trans_iso.id
-	
+
+		'''check if energylevels in db, if not; add. create relationship between 
+		energylevels and transition'''
 		try:
 			upper_el = session.query(EnergyLevel).filter(EnergyLevel.exomol_ID==key.split(' - ')[0]).filter(EnergyLevel.isotopologue_id==trans_iso.id).one()
 		except sqlalchemy.orm.exc.NoResultFound:
@@ -156,6 +162,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 			lower_el.Lambda = data1_statestrans[key][17]
 			lower_el.Sigma = data1_statestrans[key][18]
 			lower_el.Omega = data1_statestrans[key][19]
+			
 			session.add(lower_el)
 			session.flush()
 		except sqlalchemy.orm.exc.MultipleResultsFound:
@@ -164,7 +171,9 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 		
 		session.add(new_trans)
 		session.flush()
-
+		
+		count+=1
+		print(count)
 	print('closing db')	
 
 
@@ -175,7 +184,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 
 
 
-# pop_db('../../Data_J20_1000K/51V16O_J20_1000K_e-0', '../../Data_J20_1000K/51V16O_J20_1000K_e-4',1e-30, 1000)
+# pop_db('../../Data_J20_1000K/51V16O_J20_1000K_e-0', '../../Data_J20_1000K/51V16O_J20_1000K_e-0',1e-30, 1000)
 
 # pop_db('Data_14N32S/14N32S_J10_100K_e-0', 'Data_14N32S/14N32S_J10_100K_e-4',0, 10)
 

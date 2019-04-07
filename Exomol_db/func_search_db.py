@@ -21,7 +21,7 @@ def search_db():
 	#is none are selected - search through db and grab all options
 	set_mol = input('Choose specific molecules? ')
 	
-	dbmol = session.query(Isotopologue.name).all()
+	dbmol = session.query(Isotopologue.name).distinct()
 	mol = []
 	[mol.append(item[0]) for item in dbmol]
 	
@@ -130,25 +130,28 @@ def search_db():
 			tally = session.query(Transition).join(Transition.isotopologue).filter(Isotopologue.name.in_(molecule)).filter(and_(Transition.wavenumber >= rangelow, Transition.wavenumber<= rangeup)).filter(Transition.intensity > intensity_cutoff).all()
 			
 			isos = set()
-			[isos.add(item.isotopologue) for item in tally]
+			[isos.add(item.isotopologue.name) for item in tally]
 			isos = list(isos)
+			print(isos)
 			
 			temps = set()
 			[temps.add(item.isotopologue.temperature) for item in tally]
 			temps = list(temps)
+			print(temps)
+			
 			for temp in temps:
 				print(f'T = {temp}')
 
-				for i in range(len(isos)):
+				for iso in isos:
 					count = 0
 					el_states = set()
 					for item in tally:
-						if item.isotopologue.name == isos[i].name:
+						if item.isotopologue.name == iso and item.isotopologue.temperature == temp:
 							count+=1
 							el_states.add(item.upper.state)
 							el_states.add(item.lower.state)
-					print(f'There are {count} {isos[i].name} transitions with intensity greater than {intensity_cutoff} between {rangelow, rangeup}')
-					print(f'there are {len(el_states)} electronic states for {isos[i].name}')
+					print(f'There are {count} {iso} transitions with intensity greater than {intensity_cutoff} between {rangelow, rangeup}')
+					print(f'there are {len(el_states)} electronic states for {iso}')
 			
 		
 		#option 4 - goes one further with filter and has a |K| condition of. the db search 
@@ -160,7 +163,7 @@ def search_db():
 			
 			print(f'There are {len(K)} transitions that match that criteria')
 			isos = set()
-			[isos.add(item.isotopologue) for item in K]
+			[isos.add(item.isotopologue.name) for item in K]
 			isos = list(isos)
 			
 			temps = set()
@@ -169,12 +172,12 @@ def search_db():
 			for temp in temps:
 				print(f'T = {temp}')
 				
-				for i in range(len(isos)):
+				for iso in isos:
 					count = 0
 					for item in K:
-						if item.isotopologue.name == isos[i].name:
+						if item.isotopologue.name == iso and item.isotopologue.temperature == temp:
 							count+=1
-					print(f'{count} are from {isos[i].name}')
+					print(f'{count} are from {iso}')
 			
 			#print to screen - can change what is printed - only have name, ID, and K atm 
 			K_print=input('Would you like to print the exomol IDs? ')
