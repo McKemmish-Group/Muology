@@ -94,24 +94,24 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 
 	'''loop through all transitions check if in db, if not; add'''
 	for key in data_compare:
-		try:
-			new_trans = session.query(Transition).filter(Transition.exomol_ID==key).filter(Transition.wavenumber==data1_statestrans[key][21]).one()
-		except sqlalchemy.orm.exc.NoResultFound:
+		#try:
+			#new_trans = session.query(Transition).filter(Transition.exomol_ID==key).filter(Transition.wavenumber==data1_statestrans[key][21]).one()
+		#except sqlalchemy.orm.exc.NoResultFound:
 		#not in db, add
-			new_trans = Transition()
-			new_trans.exomol_ID = key
-			new_trans.einstien_A = data1_statestrans[key][20]
-			new_trans.intensity = data1_statestrans[key][22]
-			new_trans.wavenumber = data1_statestrans[key][21]
-			new_trans.change_mu = frac_delta_mu
-			new_trans.change_nu = data_compare[key][2]
-			new_trans.change_I = data_compare[key][3]
-			new_trans.K_mu = data_compare[key][4]
-			new_trans.K_I = data_compare[key][5]
+		new_trans = Transition()
+		new_trans.exomol_ID = key
+		new_trans.einstien_A = data1_statestrans[key][20]
+		new_trans.intensity = data1_statestrans[key][22]
+		new_trans.wavenumber = data1_statestrans[key][21]
+		new_trans.change_mu = frac_delta_mu
+		new_trans.change_nu = data_compare[key][2]
+		new_trans.change_I = data_compare[key][3]
+		new_trans.K_mu = data_compare[key][4]
+		new_trans.K_I = data_compare[key][5]
 			'''link to isotopologue'''
-			new_trans.isotopologue_id = trans_iso.id
-		except sqlalchemy.orm.exc.MultipleResultsFound:
-			raise Exception("Too many in db - FIX!")
+		new_trans.isotopologue_id = trans_iso.id
+		#except sqlalchemy.orm.exc.MultipleResultsFound:
+			#raise Exception("Too many in db - FIX!")
 # 		print('search for iso')
 
 
@@ -184,7 +184,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 	engine.dispose() # cleanly disconnect from the database
 
 
-# pop_db('../../Data_J20_1000K/51V16O_J20_1000K_e-0', '../../Data_J20_1000K/51V16O_J20_1000K_e-4',1e-30, 1000)
+pop_db('../../Data_J20_1000K/51V16O_J20_1000K_e-0', '../../Data_J20_1000K/51V16O_J20_1000K_e-4',1e-30, 1000)
 
 # pop_db('Data_14N32S/14N32S_J10_100K_e-0', 'Data_14N32S/14N32S_J10_100K_e-4',0, 10)
 

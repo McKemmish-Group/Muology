@@ -43,7 +43,8 @@ def clean(data1, data2, intensity_cutoff, temp):
 	print(len(data_compare))
 	return data1_statestrans, data_compare, Q_T, frac_delta_mu
     
-clean('../../Data_J20_1000K/51V16O_J20_1000K_e-0', '../../Data_J20_1000K/51V16O_J20_1000K_e-4',1e-30, 1000)
+# st, comp, qt, frac_mu = clean('../../Data_J20_1000K/51V16O_J20_1000K_e-0', '../../Data_J20_1000K/51V16O_J20_1000K_e-4',1e-30, 1000)
+st, comp, qt, frac_mu = clean('../../Data_J20_1000K/32S1H_J20_1000K_e-0', '../../Data_J20_1000K/32S1H_J20_1000K_e-4',1e-30, 1000)
 
-
-            
+test = list(comp)[1]
+print(comp[test])
