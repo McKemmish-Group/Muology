@@ -77,7 +77,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 		isotopologue and transition'''
 	try:
 		trans_iso = session.query(Isotopologue).filter(Isotopologue.name==name).filter(Isotopologue.temperature==temperature).one()
-		#print('try')
+		print('Isotopologue exists already')
 	except sqlalchemy.orm.exc.NoResultFound:
 	#not in db, add
 		#print('add')
@@ -108,7 +108,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 		new_trans.change_I = data_compare[key][3]
 		new_trans.K_mu = data_compare[key][4]
 		new_trans.K_I = data_compare[key][5]
-			'''link to isotopologue'''
+		'''link to isotopologue'''
 		new_trans.isotopologue_id = trans_iso.id
 		#except sqlalchemy.orm.exc.MultipleResultsFound:
 			#raise Exception("Too many in db - FIX!")
@@ -184,7 +184,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 	engine.dispose() # cleanly disconnect from the database
 
 
-pop_db('../../Data_J20_1000K/51V16O_J20_1000K_e-0', '../../Data_J20_1000K/51V16O_J20_1000K_e-4',1e-30, 1000)
+pop_db('../../couplings/27Al16O_J20_1000K_noc_e-0', '../../couplings/27Al16O_J20_1000K_noc_e-4',1e-30, 1000)
 
 # pop_db('Data_14N32S/14N32S_J10_100K_e-0', 'Data_14N32S/14N32S_J10_100K_e-4',0, 10)
 

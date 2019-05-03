@@ -5,6 +5,7 @@ Created on Thu Oct 11 17:02:10 2018
 
 @author: z5190046
 """
+from func_csv import write_csv
 
 def clean(data1, data2, intensity_cutoff, temp):
 
@@ -43,7 +44,41 @@ def clean(data1, data2, intensity_cutoff, temp):
 	print(len(data_compare))
 	return data1_statestrans, data_compare, Q_T, frac_delta_mu
     
-clean('../../Data_J20_1000K/51V16O_J20_1000K_e-0', '../../Data_J20_1000K/51V16O_J20_1000K_e-4',1e-30, 1000)
+st, comp, qt, fracmu = clean('../couplings/27Al16O_J20_1000K_nodiag_e-0', '../couplings/27Al16O_J20_1000K_nodiag_e-4',1e-30, 1000)
 
+count_half = 0
+count1 = 0
+count2 = 0
+count10 = 0
+count20 = 0
+count100 = 0
+count1000 = 0
+for key in comp:
+	if abs(comp[key][4]) >= 0.5:
+		count_half+=1
+	if abs(comp[key][4]) >= 1:
+		count1+=1
+	if abs(comp[key][4]) >= 2:
+		count2+=1
+	if abs(comp[key][4]) >= 10:
+		count10+=1
+	if abs(comp[key][4]) >= 20:
+		count20+=1
+	if abs(comp[key][4]) >= 100:
+		count100+=1
+	if abs(comp[key][4]) >= 1000:
+		count1000+=1
+		
+print(f'|K|>0: {len(comp)}')
+print(f'|K|>0.5: {count_half}')
+print(f'|K|>1: {count1}')
+print(f'|K|>2: {count2}')
+print(f'|K|>10: {count10}')
+print(f'|K|>20: {count20}')
+print(f'|K|>100: {count100}')
+print(f'|K|>1000: {count1000}')
+	
+
+write_csv(st, comp, '../couplings/out/AlO_nodiag.txt')
 
             
