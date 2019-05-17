@@ -5,7 +5,7 @@ import sqlalchemy
 from SQLiteConnection import engine, Session
 from ModelClasses import *
 
-def pop_db(file1, file2, intensity_cutoff, temperature):
+def pop_db_nochck(file1, file2, intensity_cutoff, temperature):
 	'''A function to populate that database ExoMol_K.db with output files from DUO. 
 	Needed are the .states and .trans files of an isotopologue without mass perturbation
 	and with perturbation. functions will join the states and trans files as well as 
@@ -19,7 +19,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
     
 	'''dictionary of nuclear statistical weight factor for each isotopologue'''
 
-	g_ns_dict = {'31P16O':2, '31P32S':2, '14N32S':3, '32S1H':2, '45Sc1H':16,  '27Al16O': 6, '27Al18O': 6 , '26Al16O': 6, '14N16O': 2, '28Si1H': 2, '51V16O': 8}
+	g_ns_dict = {'31P16O':2, '31P32S':2, '14N32S':3, '32S1H':2, '45Sc1H':16,  '27Al16O': 6, '27Al18O': 6 , '26Al16O': 6, '14N16O': 2, '28Si1H': 2, '51V16O': 8, '48Ti16O': 1, '12C12C': 1}
 
 # 	print(file1)
 	name1 = file1.split('/')    
@@ -78,6 +78,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 	try:
 		trans_iso = session.query(Isotopologue).filter(Isotopologue.name==name).filter(Isotopologue.temperature==temperature).one()
 		print('Isotopologue exists already')
+		sys.exit(0)
 	except sqlalchemy.orm.exc.NoResultFound:
 	#not in db, add
 		#print('add')
@@ -91,6 +92,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 		session.flush()		
 	except sqlalchemy.orm.exc.MultipleResultsFound:
 		raise Exception("Too many in db - FIX!")
+		sys.exit(0)
 
 	'''loop through all transitions check if in db, if not; add'''
 	for key in data_compare:
@@ -184,7 +186,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
 	engine.dispose() # cleanly disconnect from the database
 
 
-pop_db('../../couplings/27Al16O_J20_1000K_noc_e-0', '../../couplings/27Al16O_J20_1000K_noc_e-4',1e-30, 1000)
+pop_db_nochck('../../Data_J20_1000K/12C12C_J20_1000K_e-0', '../../Data_J20_1000K/12C12C_J20_1000K_e-4',1e-30, 20)
 
 # pop_db('Data_14N32S/14N32S_J10_100K_e-0', 'Data_14N32S/14N32S_J10_100K_e-4',0, 10)
 

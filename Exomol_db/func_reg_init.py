@@ -114,7 +114,7 @@ def initiate_inp():
 			file.write(txt)
 
 
-#initiate_inp()
+initiate_inp()
 
 		
 		

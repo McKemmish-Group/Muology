@@ -12,13 +12,13 @@ def clean(data1, data2, intensity_cutoff, temp):
 	from func_join_statestrans import join_statestrans
 	from func_compare import compare
     
-	g_ns_dict = {'31P16O':2, '31P32S':2, '14N32S':3, '32S1H':2, '45Sc1H':16,  '27Al16O': 6, '27Al18O': 6 , '26Al16O': 6, '14N16O': 2, '28Si1H': 2, '51V16O': 8}
+	g_ns_dict = {'31P16O':2, '31P32S':2, '14N32S':3, '32S1H':2, '45Sc1H':16,  '27Al16O': 6, '27Al18O': 6 , '26Al16O': 6, '14N16O': 2, '28Si1H': 2, '51V16O': 8, '12C12C': 1}
     
 	name1 = data1.split('/')    
 	name2 = data2.split('/')
     
 	#get the fractional change in mu from the second datafile name 
-	frac_delta_mu = 10**float(name2[-1].split('e')[1])
+	frac_delta_mu = 10**float(name2[-1].split('_e')[1])
 	print (frac_delta_mu)
     
 	# check if data1 and data2 are the same molecule 
@@ -44,7 +44,13 @@ def clean(data1, data2, intensity_cutoff, temp):
 	print(len(data_compare))
 	return data1_statestrans, data_compare, Q_T, frac_delta_mu
     
-st, comp, qt, fracmu = clean('../couplings/27Al16O_J20_1000K_nodiag_e-0', '../couplings/27Al16O_J20_1000K_nodiag_e-4',1e-30, 1000)
+st, comp, qt, fracmu = clean("../Data_J20_1000K/12C12C_J20_1000K_e-0", "../Data_J20_1000K/12C12C_J20_1000K_e-4", 1e-30, 1000)
+#clean('../Te/27Al16O_15k_J20_1000K_e-0', '../Te/27Al16O_15k_J20_1000K_e-4',1e-30, 1000)
+#clean('../couplings/27Al16O_spin-orbit_J20_1000K_e-0', '../couplings/27Al16O_spin-orbit_J20_1000K_e-4',1e-30, 1000)
+
+
+print(f'Q_T @ 1000K = {qt}')
+
 
 count_half = 0
 count1 = 0
@@ -79,6 +85,6 @@ print(f'|K|>100: {count100}')
 print(f'|K|>1000: {count1000}')
 	
 
-write_csv(st, comp, '../couplings/out/AlO_nodiag.txt')
+#write_csv(st, comp, '../Te/out/AlO_15k.txt')
 
             

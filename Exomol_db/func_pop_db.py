@@ -19,7 +19,7 @@ def pop_db(file1, file2, intensity_cutoff, temperature):
     
 	'''dictionary of nuclear statistical weight factor for each isotopologue'''
 
-	g_ns_dict = {'31P16O':2, '31P32S':2, '14N32S':3, '32S1H':2, '45Sc1H':16,  '27Al16O': 6, '27Al18O': 6 , '26Al16O': 6, '14N16O': 2, '28Si1H': 2, '51V16O': 8}
+	g_ns_dict = {'31P16O':2, '31P32S':2, '14N32S':3, '32S1H':2, '45Sc1H':16,  '27Al16O': 6, '27Al18O': 6 , '26Al16O': 6, '14N16O': 2, '28Si1H': 2, '51V16O': 8, '48Ti16O': 1}
 
 # 	print(file1)
 	name1 = file1.split('/')    

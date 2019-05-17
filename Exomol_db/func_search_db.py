@@ -190,8 +190,8 @@ def search_db():
 # 				outpt = [['isotopologue.name', 'exomol_ID', 'K_mu']]
 # 				[outpt.append([item.isotopologue.name, item.exomol_ID, item.K_mu]) for item in K]
 
-				outpt = [['temperature', 'isotopologue.name', 'exomol_ID', 'wavenumber', 'K_mu', 'upper.energy', 'degeneracy', 'J', 'Tparity', 'Rparity', 'state', 'v', 'Lambda', 'Sigma', 'Omega', 'lower.energy', 'degeneracy', 'J', 'Tparity', 'Rparity', 'state', 'v', 'Lambda', 'Sigma', 'Omega']]
-				[outpt.append([item.isotopologue.temperature, item.isotopologue.name, item.exomol_ID, item.wavenumber, item.K_mu, item.upper.energy, item.upper.degeneracy, item.upper.J, item.upper.Tparity, item.upper.Rparity, item.upper.state, item.upper.v, item.upper.Lambda, item.upper.Sigma, item.upper.Omega, item.lower.energy, item.lower.degeneracy, item.lower.J, item.lower.Tparity, item.lower.Rparity, item.lower.state, item.lower.v, item.lower.Lambda, item.lower.Sigma, item.lower.Omega]) for item in K
+				outpt = [['temperature', 'isotopologue.name', 'exomol_ID', 'wavenumber', 'K_mu', 'Intensity', 'upper.energy', 'degeneracy', 'J', 'Tparity', 'Rparity', 'state', 'v', 'Lambda', 'Sigma', 'Omega', 'lower.energy', 'degeneracy', 'J', 'Tparity', 'Rparity', 'state', 'v', 'Lambda', 'Sigma', 'Omega']]
+				[outpt.append([item.isotopologue.temperature, item.isotopologue.name, item.exomol_ID, item.wavenumber, item.K_mu, item.intensity, item.upper.energy, item.upper.degeneracy, item.upper.J, item.upper.Tparity, item.upper.Rparity, item.upper.state, item.upper.v, item.upper.Lambda, item.upper.Sigma, item.upper.Omega, item.lower.energy, item.lower.degeneracy, item.lower.J, item.lower.Tparity, item.lower.Rparity, item.lower.state, item.lower.v, item.lower.Lambda, item.lower.Sigma, item.lower.Omega]) for item in K
 				]
 				with open(f'{filename}.txt', 'w') as file:
 					[file.write(f'{row}\n') for row in outpt]
